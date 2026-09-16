@@ -29,6 +29,9 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Добавить sdkmanager в PATH
+        run: echo "/usr/local/lib/android/sdk/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+
       - name: Принять лицензии Android SDK
         run: yes | sdkmanager --licenses > /dev/null || true
 

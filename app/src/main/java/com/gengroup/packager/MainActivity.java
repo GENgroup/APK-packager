@@ -2,6 +2,7 @@ package com.gengroup.packager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -118,7 +119,17 @@ public class MainActivity extends Activity {
 
         // Чёрный фон вместо "пустого окна", пока грузится новый канал
         webView.setBackgroundColor(0xFF000000);
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            private Bitmap transparentPoster;
+
+            @Override
+            public Bitmap getDefaultVideoPoster() {
+                if (transparentPoster == null) {
+                    transparentPoster = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                }
+                return transparentPoster;
+            }
+        });
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         setContentView(webView);

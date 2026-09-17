@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +27,13 @@ public class MainActivity extends Activity {
     private static final String TARGET_FILENAME = "TARGET_FILENAME_PLACEHOLDER";
     private static final String TARGET_SUBFOLDER = "GEN";
     private static final int PERMISSION_REQUEST_CODE = 1001;
+
+    private static final String HIDE_POSTER_JS =
+            "(function(){var s=document.createElement('style');" +
+            "s.innerHTML='video::-webkit-media-controls-start-playback-button,'+" +
+            "'video::-webkit-media-controls-overlay-play-button{display:none !important;" +
+            "opacity:0 !important;pointer-events:none !important;}';" +
+            "document.head.appendChild(s);})();";
 
     private WebView webView;
 
@@ -131,6 +139,13 @@ public class MainActivity extends Activity {
             }
         });
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.evaluateJavascript(HIDE_POSTER_JS, null);
+            }
+        });
 
         setContentView(webView);
         webView.loadUrl(Uri.fromFile(file).toString());
